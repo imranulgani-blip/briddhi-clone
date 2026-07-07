@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force)",
+      "PowerShell(Get-ExecutionPolicy -Scope CurrentUser)",
+      "Bash(npm run *)",
+      "mcp__claude_ai_Figma__get_screenshot",
+      "mcp__claude_ai_Figma__get_metadata",
+      "mcp__claude_ai_Figma__whoami",
+      "Bash(curl -s -o /dev/null -w \"draft: %{http_code}\\\\n\" http://localhost:3002/draft)",
+      "Bash(curl -s http://localhost:3002/draft)",
+      "Bash(node --input-type=module)",
+      "Bash(curl -s -o /dev/null -w \"hero-city.svg: %{http_code}\\\\n\" http://localhost:3002/hero-city.svg)",
+      "Bash(cd /c/Repo/briddhi-clone *)",
+      "Read(//c/Users/farha/AppData/Local/Temp/claude/c--Repo-briddhi-clone/d2579d08-5794-4672-ab32-6d0f8ef2ecd7/scratchpad/**)",
+      "Bash(curl -s -o /dev/null -w \"hero-bg.jpg: %{http_code}\\\\n\" http://localhost:3002/hero-bg.jpg)"
+    ]
+  }
+}

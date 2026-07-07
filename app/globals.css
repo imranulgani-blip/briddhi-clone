@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: #05070d;
+  color: #eef0f6;
+  min-height: 100%;
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-image:
+    radial-gradient(1200px 600px at 20% -10%, rgba(74, 222, 128, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(59, 130, 246, 0.06), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Number-forward mono blocks */
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Card surface */
+.surface {
+  background: linear-gradient(180deg, rgba(15, 22, 38, 0.9), rgba(10, 15, 26, 0.9));
+  border: 1px solid rgba(60, 73, 112, 0.35);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+}
+
+/* Section separator hairline */
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(107, 120, 152, 0.35), transparent);
+}
+
+/* Focus ring for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #4ade80;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #05070d;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2338;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2a3552;
+}
+
+/* Range slider styling */
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  width: 100%;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: #1a2338;
+  border-radius: 999px;
+}
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: #1a2338;
+  border-radius: 999px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 999px;
+  background: #4ade80;
+  margin-top: -7px;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 999px;
+  border: none;
+  background: #4ade80;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15);
+  cursor: pointer;
+}
+
+/* Marquee ticker */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.group\/ticker:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Hero fund-card auto-slider (slower marquee, pause on hover) */
+.animate-slide {
+  animation: marquee 50s linear infinite;
+}
+.group\/slider:hover .animate-slide {
+  animation-play-state: paused;
+}
+
+/* Gradient text helper */
+.text-gradient {
+  background: linear-gradient(90deg, #4ade80, #6ee7b7, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle dotted grid backdrop */
+.grid-bg {
+  background-image: radial-gradient(rgba(107, 120, 152, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Elevated glass card */
+.glass {
+  background: linear-gradient(180deg, rgba(18, 26, 44, 0.72), rgba(10, 15, 26, 0.72));
+  border: 1px solid rgba(74, 222, 128, 0.14);
+  border-radius: 20px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Print — statements to PDF: hide chrome, show only the statement paper */
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  body {
+    background-image: none !important;
+  }
+  .statement-paper {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+  .print-area {
+    margin: 0 !important;
+  }
+}
+
+/* Tabular helper */
+table.data td,
+table.data th {
+  padding: 12px 16px;
+}
+table.data th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #a4adc5;
+}
+table.data tbody tr {
+  border-top: 1px solid rgba(60, 73, 112, 0.25);
+}
+table.data tbody tr:hover {
+  background: rgba(26, 35, 56, 0.4);
+}
