@@ -1,9 +1,11 @@
 "use client";
 
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FUNDS, AMCS, AMC_LIST, bdtCompact, type Fund, type Amc } from "../data/amcFunds";
 import { LightHeader, LightFooter, BRAND_ORANGE as ORANGE } from "../components/LightChrome";
+import FundCompare from "./FundCompare";
 
 const riskColor: Record<string, { bg: string; fg: string }> = {
   Low: { bg: "#ecfdf5", fg: "#059669" },
@@ -12,6 +14,17 @@ const riskColor: Record<string, { bg: string; fg: string }> = {
 };
 
 export default function FundsPage() {
+  const [compareIds, setCompareIds] = useState<string[]>(["ekush-first-unit-fund", "edge-amc-growth-fund"]);
+  const compareRef = useRef<HTMLDivElement>(null);
+  const toggleCompare = (id: string) => {
+    setCompareIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 4) return prev;
+      setTimeout(() => compareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+      return [...prev, id];
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[#F7F8FB] text-slate-900" style={{ colorScheme: "light" }}>
       <LightHeader />
@@ -49,11 +62,25 @@ export default function FundsPage() {
         </div>
       </section>
 
+      {/* COMPARE */}
+      <section ref={compareRef} className="mx-auto max-w-7xl scroll-mt-20 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-5">
+          <h2 className="text-2xl font-bold tracking-tight">
+            Compare <span style={{ color: ORANGE }}>funds</span>
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            <span className="font-semibold text-slate-700">Click any fund below</span> to add it here — then compare growth,
+            returns and key metrics side by side.
+          </p>
+        </div>
+        <FundCompare ids={compareIds} setIds={setCompareIds} />
+      </section>
+
       {/* AMC SECTIONS */}
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         {AMC_LIST.map((a) => {
           const funds = FUNDS.filter((f) => f.amc === a.slug).sort((x, y) => (y.sinceInception ?? 0) - (x.sinceInception ?? 0));
-          return <AmcSection key={a.slug} amc={a} funds={funds} />;
+          return <AmcSection key={a.slug} amc={a} funds={funds} compareIds={compareIds} onToggle={toggleCompare} />;
         })}
 
         <p className="mt-8 text-xs leading-relaxed text-slate-400">
@@ -68,7 +95,7 @@ export default function FundsPage() {
   );
 }
 
-function AmcSection({ amc, funds }: { amc: Amc; funds: Fund[] }) {
+function AmcSection({ amc, funds, compareIds, onToggle }: { amc: Amc; funds: Fund[]; compareIds: string[]; onToggle: (id: string) => void }) {
   return (
     <section id={`amc-${amc.slug}`} className="scroll-mt-20 py-8">
       {/* themed band header */}
@@ -98,14 +125,36 @@ function AmcSection({ amc, funds }: { amc: Amc; funds: Fund[] }) {
       {/* fund cards in this AMC's colour */}
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {funds.map((f, i) => (
-          <FundCard key={f.id} fund={f} amc={amc} index={i} />
+          <FundCard
+            key={f.id}
+            fund={f}
+            amc={amc}
+            index={i}
+            selected={compareIds.includes(f.id)}
+            disabled={!compareIds.includes(f.id) && compareIds.length >= 4}
+            onToggle={() => onToggle(f.id)}
+          />
         ))}
       </div>
     </section>
   );
 }
 
-function FundCard({ fund, amc, index }: { fund: Fund; amc: Amc; index: number }) {
+function FundCard({
+  fund,
+  amc,
+  index,
+  selected,
+  disabled,
+  onToggle,
+}: {
+  fund: Fund;
+  amc: Amc;
+  index: number;
+  selected: boolean;
+  disabled: boolean;
+  onToggle: () => void;
+}) {
   const risk = riskColor[fund.risk];
   return (
     <motion.div
@@ -115,11 +164,23 @@ function FundCard({ fund, amc, index }: { fund: Fund; amc: Amc; index: number })
       transition={{ duration: 0.35, delay: (index % 3) * 0.05 }}
       whileHover={{ y: -4 }}
     >
-      <Link
-        href={`/funds/${fund.id}`}
-        className="flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg"
-        style={{ borderTop: `4px solid ${amc.color}` }}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => !disabled && onToggle()}
+        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && !disabled && onToggle()}
+        aria-pressed={selected}
+        className={`relative flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition-all ${
+          disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:shadow-lg"
+        }`}
+        style={{ borderTop: `4px solid ${amc.color}`, ...(selected ? { boxShadow: `0 0 0 2px ${amc.color}` } : {}) }}
       >
+        {selected && (
+          <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full text-xs font-bold text-white shadow" style={{ background: amc.color }}>
+            ✓
+          </span>
+        )}
+
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="truncate font-semibold leading-tight text-slate-900">{fund.name}</div>
@@ -145,13 +206,22 @@ function FundCard({ fund, amc, index }: { fund: Fund; amc: Amc; index: number })
           <Stat label="AUM" value={fund.aum != null ? bdtCompact(fund.aum) : "—"} small />
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-sm">
-          <span className="text-slate-400">Min ৳{fund.minInvestment.toLocaleString("en-IN")}</span>
-          <span className="font-semibold" style={{ color: amc.color }}>
-            View fund →
+        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-sm">
+          <span
+            className="font-semibold"
+            style={{ color: selected ? amc.color : disabled ? "#94a3b8" : "#334155" }}
+          >
+            {selected ? "✓ Comparing" : disabled ? "Compare full (4)" : "＋ Compare"}
           </span>
+          <Link
+            href={`/funds/${fund.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="text-slate-400 hover:text-slate-700"
+          >
+            View fund →
+          </Link>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }

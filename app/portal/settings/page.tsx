@@ -55,11 +55,11 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-sm text-ink-400">Manage how Briddhi notifies you. {saved && <span className="text-neon-400">Saved ✓</span>}</p>
+        <p className="text-sm text-slate-500">Manage how Briddhi notifies you. {saved && <span className="text-[#F5821E]">Saved ✓</span>}</p>
       </div>
 
-      {error && <div className="surface border-amber-500/40 p-6 text-amber-200">{error}</div>}
-      {loading && <div className="text-ink-400">Loading preferences…</div>}
+      {error && <div className="lcard border-amber-200 bg-amber-50 p-6 text-amber-700">{error}</div>}
+      {loading && <div className="text-slate-500">Loading preferences…</div>}
 
       {prefs && (
         <>
@@ -83,20 +83,20 @@ function Section({
   onToggle: (k: keyof Prefs) => void;
 }) {
   return (
-    <div className="surface divide-y divide-ink-700/40">
-      <div className="px-5 py-3 text-sm font-semibold text-ink-100">{title}</div>
+    <div className="lcard divide-y divide-slate-100">
+      <div className="px-5 py-3 text-sm font-semibold text-slate-900">{title}</div>
       {items.map((it) => (
         <div key={String(it.key)} className="flex items-center justify-between gap-4 px-5 py-4">
           <div>
-            <div className="text-sm font-medium text-ink-100">{it.label}</div>
-            <div className="text-xs text-ink-400">{it.desc}</div>
+            <div className="text-sm font-medium text-slate-900">{it.label}</div>
+            <div className="text-xs text-slate-500">{it.desc}</div>
           </div>
           <button
             role="switch"
             aria-checked={Boolean(prefs[it.key])}
             onClick={() => onToggle(it.key)}
             className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-              prefs[it.key] ? "bg-neon-400" : "bg-ink-600"
+              prefs[it.key] ? "bg-[#F5821E]" : "bg-slate-200"
             }`}
           >
             <span

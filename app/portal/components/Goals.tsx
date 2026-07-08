@@ -48,50 +48,50 @@ export default function Goals({ investorId, invested }: { investorId: string; in
       <div className="mb-4 flex items-end justify-between">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Goals</h2>
-          <p className="mt-0.5 text-sm text-ink-400">Progress tracked against your total invested amount.</p>
+          <p className="mt-0.5 text-sm text-slate-500">Progress tracked against your total invested amount.</p>
         </div>
         <button
           onClick={() => setAdding((a) => !a)}
-          className="rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-1.5 text-sm text-ink-200 hover:bg-ink-700/70"
+          className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 hover:bg-slate-100"
         >
           {adding ? "Cancel" : "+ Add goal"}
         </button>
       </div>
 
       {adding && (
-        <div className="surface mb-4 grid grid-cols-1 gap-3 p-4 sm:grid-cols-4">
+        <div className="lcard mb-4 grid grid-cols-1 gap-3 p-4 sm:grid-cols-4">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Goal name (e.g. Hajj fund)"
-            className="rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-2 text-sm text-ink-100 placeholder:text-ink-500 sm:col-span-2"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 sm:col-span-2"
           />
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             type="number"
             placeholder="Target ৳"
-            className="rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-2 text-sm text-ink-100 placeholder:text-ink-500"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400"
           />
           <input
             value={date}
             onChange={(e) => setDate(e.target.value)}
             type="date"
-            className="rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-2 text-sm text-ink-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           />
           <button
             onClick={add}
             disabled={busy || !name || !amount}
-            className="rounded-lg bg-neon-400 px-3 py-2 text-sm font-semibold text-ink-950 hover:bg-neon-500 disabled:opacity-50 sm:col-span-4"
+            className="rounded-lg bg-[#F5821E] px-3 py-2 text-sm font-semibold text-white hover:bg-[#e0761a] disabled:opacity-50 sm:col-span-4"
           >
             {busy ? "Saving…" : "Save goal"}
           </button>
         </div>
       )}
 
-      {loading && <div className="text-sm text-ink-400">Loading goals…</div>}
+      {loading && <div className="text-sm text-slate-500">Loading goals…</div>}
       {!loading && goals.length === 0 && (
-        <div className="surface p-6 text-center text-sm text-ink-400">
+        <div className="lcard p-6 text-center text-sm text-slate-500">
           No goals yet. Add one to track progress toward a target.
         </div>
       )}
@@ -101,26 +101,26 @@ export default function Goals({ investorId, invested }: { investorId: string; in
           const progress = Math.min(100, (invested / g.target_amount) * 100);
           const reached = invested >= g.target_amount;
           return (
-            <div key={g.id} className="surface p-5">
+            <div key={g.id} className="lcard p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="font-semibold text-ink-100">{g.name}</div>
-                  {g.target_date && <div className="text-xs text-ink-500">by {fmtDate(g.target_date)}</div>}
+                  <div className="font-semibold text-slate-900">{g.name}</div>
+                  {g.target_date && <div className="text-xs text-slate-400">by {fmtDate(g.target_date)}</div>}
                 </div>
-                <button onClick={() => remove(g.id)} className="text-xs text-ink-500 hover:text-rose-400">
+                <button onClick={() => remove(g.id)} className="text-xs text-slate-400 hover:text-rose-600">
                   Remove
                 </button>
               </div>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-ink-700/60">
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-orange-50">
                 <div
-                  className={`h-full rounded-full ${reached ? "bg-neon-400" : "bg-sky-400"}`}
+                  className={`h-full rounded-full ${reached ? "bg-[#F5821E]" : "bg-sky-400"}`}
                   style={{ width: `${progress}%` }}
                 />
               </div>
               <div className="mt-2 flex items-center justify-between text-xs">
-                <span className="mono text-ink-300">{bdt(invested)}</span>
-                <span className={reached ? "text-neon-400" : "text-ink-400"}>{progress.toFixed(0)}%</span>
-                <span className="mono text-ink-400">{bdt(g.target_amount)}</span>
+                <span className="mono text-slate-600">{bdt(invested)}</span>
+                <span className={reached ? "text-[#F5821E]" : "text-slate-500"}>{progress.toFixed(0)}%</span>
+                <span className="mono text-slate-500">{bdt(g.target_amount)}</span>
               </div>
             </div>
           );

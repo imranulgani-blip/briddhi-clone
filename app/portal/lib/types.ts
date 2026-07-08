@@ -69,6 +69,7 @@ export interface Allocations {
   byRisk: AllocationSlice[];
   byType: AllocationSlice[];
   byAssetClass: AllocationSlice[] | null; // null = N/A (needs asset_class data)
+  bySector: AllocationSlice[] | null; // null = N/A (needs sector data)
 }
 
 export interface Activity {

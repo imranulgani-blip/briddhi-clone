@@ -45,6 +45,13 @@ body {
   background: linear-gradient(90deg, transparent, rgba(107, 120, 152, 0.35), transparent);
 }
 
+/* Light card (investor portal light theme) */
+.lcard {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
 /* Focus ring for keyboard navigation */
 button:focus-visible,
 a:focus-visible,
@@ -108,6 +115,58 @@ input[type="range"]::-moz-range-thumb {
   background: #4ade80;
   box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15);
   cursor: pointer;
+}
+
+/* Starfield twinkle (Money Map space hero) */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Shooting star (Money Map space hero) — one streak per cycle */
+@keyframes shooting {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(18deg);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  9% {
+    transform: translate3d(480px, 150px, 0) rotate(18deg);
+    opacity: 1;
+  }
+  11%,
+  100% {
+    transform: translate3d(480px, 150px, 0) rotate(18deg);
+    opacity: 0;
+  }
+}
+.shooting-star {
+  position: absolute;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 9999px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+  opacity: 0;
+  animation: shooting 10s ease-in infinite;
+}
+.shooting-star::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.9);
 }
 
 /* Marquee ticker */

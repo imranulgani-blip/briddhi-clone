@@ -82,6 +82,7 @@ const HERO_SLIDE_MS = 6000; // 6 seconds per image
 
 function Hero() {
   const [slide, setSlide] = useState(0);
+  const [slideDir, setSlideDir] = useState<"rtl" | "ltr">("rtl");
   useEffect(() => {
     const id = window.setInterval(() => setSlide((s) => (s + 1) % HERO_SLIDES.length), HERO_SLIDE_MS);
     return () => window.clearInterval(id);
@@ -126,8 +127,33 @@ function Hero() {
       </div>
 
       <div className="group/slider relative pb-14 pt-6 md:pb-20">
+        {/* direction controls */}
+        <button
+          onClick={() => setSlideDir("ltr")}
+          aria-label="Slide cards left to right"
+          className={`absolute left-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full shadow-lg backdrop-blur transition-colors ${
+            slideDir === "ltr" ? "text-white" : "bg-white/90 text-slate-700 hover:bg-white"
+          }`}
+          style={slideDir === "ltr" ? { background: ORANGE } : undefined}
+        >
+          ‹
+        </button>
+        <button
+          onClick={() => setSlideDir("rtl")}
+          aria-label="Slide cards right to left"
+          className={`absolute right-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full shadow-lg backdrop-blur transition-colors ${
+            slideDir === "rtl" ? "text-white" : "bg-white/90 text-slate-700 hover:bg-white"
+          }`}
+          style={slideDir === "rtl" ? { background: ORANGE } : undefined}
+        >
+          ›
+        </button>
+
         <div className="marquee-mask overflow-hidden">
-          <div className="animate-slide flex w-max gap-5 px-4">
+          <div
+            className="animate-slide flex w-max gap-5 px-4"
+            style={{ animationDirection: slideDir === "ltr" ? "reverse" : "normal" }}
+          >
             {[...HERO_CARDS, ...HERO_CARDS].map((c, i) => (
               <FundCard key={i} card={c} />
             ))}
@@ -272,16 +298,16 @@ function JourneySection() {
 // ----------------------------------------------------------------------------
 // "What is a Mutual Fund?" — a jar pulling in blue-chip stocks (motion visual)
 // ----------------------------------------------------------------------------
-const BLUE_CHIPS = [
-  { t: "GP", c: "#0ea5e9" },
-  { t: "SQUARE", c: "#10b981" },
-  { t: "BRAC", c: "#f97316" },
-  { t: "BEXIMCO", c: "#8b5cf6" },
-  { t: "WALTON", c: "#ef4444" },
-  { t: "RENATA", c: "#14b8a6" },
-  { t: "CITY BK", c: "#3b82f6" },
-  { t: "BATBC", c: "#eab308" },
-  { t: "LHBL", c: "#64748b" },
+// Companies orbiting the jar (from the design). x/y = position % within the square.
+const JAR_COMPANIES = [
+  { name: "BRACBANK", amt: "৳6,000", color: "#e11d48", x: 50, y: 9 },
+  { name: "SQURPHARMA", amt: "৳6,000", color: "#16a34a", x: 20, y: 22 },
+  { name: "IBBL Bond", amt: "৳6,000", color: "#0d9488", x: 80, y: 22 },
+  { name: "BEXIMCO", amt: "৳3,000", color: "#7c3aed", x: 10, y: 50 },
+  { name: "PRIME BANK", amt: "৳6,000", color: "#C8102E", x: 90, y: 50 },
+  { name: "BERGER", amt: "৳12,000", color: "#f97316", x: 20, y: 78 },
+  { name: "MARICO", amt: "৳6,000", color: "#2563eb", x: 80, y: 78 },
+  { name: "GOVT. Bond", amt: "৳6,000", color: "#dc2626", x: 50, y: 91 },
 ];
 
 function WhatIsMutualFund() {
@@ -309,74 +335,152 @@ function WhatIsMutualFund() {
           </ul>
         </Reveal>
         <Reveal delay={0.15}>
-          <Jar />
+          <MutualFundStory />
         </Reveal>
       </div>
     </section>
   );
 }
 
-function Jar() {
+// Benefits shown in the final phase (the "mutual fund gives you…" payoff).
+const FUND_BENEFITS = [
+  { icon: "🥧", title: "Diversified", body: "Your money spreads across stocks, bonds & sectors — cutting single-asset risk automatically.", x: 20, y: 18 },
+  { icon: "🛡️", title: "Lower Risk", body: "Professional allocation smooths out market volatility for steadier long-term growth.", x: 80, y: 18 },
+  { icon: "👔", title: "Expert Management", body: "BSEC-licensed fund managers with decades of expertise handle your portfolio daily.", x: 20, y: 82 },
+  { icon: "📈", title: "Grow Your Wealth", body: "Stay invested for the long term and benefit from the power of compounding.", x: 80, y: 82 },
+];
+
+// Three-phase looping story: (0) companies orbit the jar → (1) they pour in →
+// (2) it becomes one Mutual Fund with its benefits.
+function MutualFundStory() {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    const durs = [3400, 2200, 4000];
+    const t = window.setTimeout(() => setPhase((p) => (p + 1) % 3), durs[phase]);
+    return () => window.clearTimeout(t);
+  }, [phase]);
+
+  const caption = ["Many companies…", "…pool into one fund", "…that works for you"][phase];
+
   return (
-    <div className="relative mx-auto h-[420px] w-full max-w-[420px]">
-      {/* falling blue-chip stock chips being pulled into the jar */}
-      {BLUE_CHIPS.map((chip, i) => (
-        <motion.div
-          key={chip.t}
-          className="absolute left-1/2 top-0 z-10"
-          initial={{ x: 0, y: 0, opacity: 0 }}
-          animate={{
-            x: [(i % 2 ? 1 : -1) * (30 + (i % 3) * 46), (i % 2 ? 1 : -1) * 10, 0],
-            y: [10, 150, 250],
-            opacity: [0, 1, 1, 0],
-            rotate: [(i % 2 ? -14 : 14), 0],
-            scale: [0.9, 1, 0.7],
-          }}
-          transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.45, ease: "easeIn" }}
-        >
-          <span
-            className="-translate-x-1/2 rounded-lg px-2.5 py-1 text-xs font-bold text-white shadow-lg"
-            style={{ background: chip.c }}
-          >
-            {chip.t}
-          </span>
-        </motion.div>
+    <div className="relative mx-auto aspect-square w-full max-w-[540px]">
+      {/* concentric guide rings (shared) */}
+      {[42, 64, 86].map((s) => (
+        <div key={s} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-slate-100" style={{ width: `${s}%`, height: `${s}%` }} />
       ))}
 
-      {/* the jar */}
-      <svg viewBox="0 0 300 340" className="absolute inset-0 mx-auto h-full w-full">
-        <defs>
-          <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#e6f0fb" />
-            <stop offset="1" stopColor="#d6e4f5" />
-          </linearGradient>
-          <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#f9b878" />
-            <stop offset="1" stopColor={ORANGE} />
-          </linearGradient>
-        </defs>
-        {/* lid */}
-        <rect x="95" y="60" width="110" height="20" rx="6" fill="#cbd5e1" />
-        {/* body */}
-        <path d="M85 88 Q150 76 215 88 L210 300 Q150 320 90 300 Z" fill="url(#glass)" stroke="#b6c6db" strokeWidth="2" />
-        {/* animated fill level */}
-        <motion.path
-          d="M92 210 Q150 200 208 210 L206 300 Q150 318 94 300 Z"
-          fill="url(#fill)"
-          initial={{ opacity: 0.5, y: 40 }}
-          whileInView={{ opacity: 0.95, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-        />
-        <text x="150" y="270" textAnchor="middle" fill="#fff" fontSize="15" fontWeight="700">
-          1 Fund
-        </text>
-        {/* shine */}
-        <path d="M105 96 Q112 200 120 296" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" opacity="0.5" fill="none" />
-      </svg>
+      {/* orange glow, strongest as companies pour in */}
+      <motion.div
+        className="absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(245,130,30,0.35), transparent 70%)", filter: "blur(24px)" }}
+        animate={{ opacity: phase === 1 ? 1 : 0.4, scale: phase === 1 ? 1.25 : 1 }}
+        transition={{ duration: 1 }}
+      />
 
-      <div className="absolute inset-x-0 bottom-0 text-center text-sm font-medium text-slate-400">
-        Many blue-chip stocks → one simple fund
+      {/* ---------- JAR SCENE (phases 0 & 1) ---------- */}
+      <motion.div className="absolute inset-0" animate={{ opacity: phase === 2 ? 0 : 1 }} transition={{ duration: 0.5 }}>
+        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2" style={{ width: "30%" }}>
+          <svg viewBox="0 0 300 340" className="h-auto w-full">
+            <defs>
+              <linearGradient id="jglass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#eef4fb" />
+                <stop offset="1" stopColor="#dce7f4" />
+              </linearGradient>
+              <linearGradient id="jfill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#f9b878" />
+                <stop offset="1" stopColor={ORANGE} />
+              </linearGradient>
+            </defs>
+            <rect x="95" y="58" width="110" height="20" rx="6" fill="#cbd5e1" />
+            <path d="M85 86 Q150 74 215 86 L210 300 Q150 320 90 300 Z" fill="url(#jglass)" stroke="#b6c6db" strokeWidth="2" />
+            <motion.path
+              fill="url(#jfill)"
+              animate={{ d: phase >= 1 ? "M92 150 Q150 140 208 150 L206 300 Q150 318 94 300 Z" : "M92 232 Q150 224 208 232 L206 300 Q150 316 94 300 Z" }}
+              transition={{ duration: 1.1, ease: "easeInOut" }}
+            />
+            <text x="150" y="270" textAnchor="middle" fill="#fff" fontSize="16" fontWeight="700">1 Fund</text>
+            <path d="M105 94 Q112 200 120 296" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" opacity="0.5" fill="none" />
+          </svg>
+        </div>
+
+        {JAR_COMPANIES.map((co, i) => {
+          const cluster = { x: 50 + ((i % 3) - 1) * 4, y: 47 + (Math.floor(i / 3) - 1) * 5 };
+          return (
+            <motion.div
+              key={co.name}
+              className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+              initial={{ left: `${co.x}%`, top: `${co.y}%`, opacity: 0, scale: 0.85 }}
+              animate={{
+                left: phase === 0 ? `${co.x}%` : `${cluster.x}%`,
+                top: phase === 0 ? `${co.y}%` : `${cluster.y}%`,
+                scale: phase === 0 ? 1 : 0.32,
+                opacity: 1,
+              }}
+              transition={{ type: "spring", stiffness: 70, damping: 15, delay: phase === 0 ? i * 0.05 : i * 0.04 }}
+            >
+              <div className="flex items-center gap-2 rounded-xl bg-white px-2.5 py-1.5 shadow-md ring-1 ring-black/5">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-[10px] font-bold text-white" style={{ background: co.color }}>
+                  {co.name.slice(0, 1)}
+                </span>
+                <div className="leading-tight">
+                  <div className="text-[10px] font-bold text-slate-800">{co.name}</div>
+                  <div className="text-[9px]">
+                    <span className="font-bold" style={{ color: ORANGE }}>{co.amt}</span>
+                    <span className="text-slate-400"> Invested</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+
+      {/* ---------- BENEFITS SCENE (phase 2) ---------- */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: phase === 2 ? 1 : 0 }}
+        transition={{ duration: 0.5, delay: phase === 2 ? 0.35 : 0 }}
+        style={{ pointerEvents: phase === 2 ? "auto" : "none" }}
+      >
+        <motion.div
+          className="absolute left-1/2 top-1/2 grid h-[26%] w-[26%] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full text-center text-white shadow-xl"
+          style={{ background: `radial-gradient(circle at 35% 30%, #f9b878, ${ORANGE} 65%, #d9741a)` }}
+          animate={{ scale: phase === 2 ? [0.7, 1.05, 1] : 0.7 }}
+          transition={{ duration: 0.7 }}
+        >
+          <span className="text-xs font-bold leading-tight sm:text-sm">MUTUAL<br />FUND</span>
+        </motion.div>
+
+        {FUND_BENEFITS.map((b, i) => (
+          <motion.div
+            key={b.title}
+            className="absolute w-40 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-3 shadow-md ring-1 ring-black/5"
+            style={{ left: `${b.x}%`, top: `${b.y}%` }}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={phase === 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
+            transition={{ delay: phase === 2 ? 0.5 + i * 0.12 : 0, type: "spring", stiffness: 200, damping: 16 }}
+          >
+            <div className="flex items-center gap-1.5 text-sm font-bold text-slate-900">
+              <span>{b.icon}</span> {b.title}
+            </div>
+            <p className="mt-1 text-[10px] leading-snug text-slate-500">{b.body}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* phase caption */}
+      <div className="absolute inset-x-0 -bottom-2 text-center">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={caption}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="text-sm font-medium text-slate-400"
+          >
+            {caption}
+          </motion.span>
+        </AnimatePresence>
       </div>
     </div>
   );
