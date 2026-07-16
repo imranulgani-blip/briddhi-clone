@@ -158,7 +158,6 @@ function fundTypeColor(label: string) {
 // (anti-clockwise) carries money coins; centre shows live current value + gain.
 function OrbitMap({ amcs, currentValue, gainPct }: { amcs: AmcAgg[]; currentValue: number; gainPct: number }) {
   const up = gainPct >= 0;
-  const coins = Array.from({ length: 8 });
   // Size each AMC bubble by how much money is invested in it (bigger = more invested).
   const maxInv = Math.max(...amcs.map((a) => a.invested), 1);
   const minInv = Math.min(...amcs.map((a) => a.invested), 0);
@@ -200,28 +199,6 @@ function OrbitMap({ amcs, currentValue, gainPct }: { amcs: AmcAgg[]; currentValu
         })}
       </motion.div>
 
-      {/* inner ring — anti-clockwise, coins */}
-      <motion.div className="absolute inset-0" animate={{ rotate: -360 }} transition={{ duration: 110, ease: "linear", repeat: Infinity }}>
-        <div className="absolute left-1/2 top-1/2 h-[67%] w-[67%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/10" />
-        {coins.map((_, i) => {
-          const ang = (i / coins.length) * 2 * Math.PI;
-          const x = 50 + 33.5 * Math.cos(ang);
-          const y = 50 + 33.5 * Math.sin(ang);
-          return (
-            <div key={i} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${x}%`, top: `${y}%` }}>
-              <motion.span
-                animate={{ rotate: 360 }}
-                transition={{ duration: 110, ease: "linear", repeat: Infinity }}
-                className="grid h-5 w-5 place-items-center rounded-full text-[9px] font-bold text-white shadow"
-                style={{ background: i % 2 ? "#f5a623" : "#F5821E" }}
-              >
-                ৳
-              </motion.span>
-            </div>
-          );
-        })}
-      </motion.div>
-
       {/* centre — real spinning Earth at night (true centre; wrapper handles
           centering so framer's scale transform can't override the translate) */}
       <div className="absolute left-1/2 top-1/2 h-[54%] w-[54%] -translate-x-1/2 -translate-y-1/2">
@@ -230,31 +207,62 @@ function OrbitMap({ amcs, currentValue, gainPct }: { amcs: AmcAgg[]; currentValu
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 160, damping: 16 }}
           className="relative h-full w-full overflow-hidden rounded-full"
-          style={{ boxShadow: "0 0 60px 16px rgba(34,211,238,0.4), 0 0 0 1px rgba(34,211,238,0.45)" }}
+          style={{ boxShadow: "0 0 44px 10px rgba(56,130,246,0.32), 0 0 96px 26px rgba(37,99,235,0.16), 0 0 0 1px rgba(147,197,253,0.55)" }}
         >
-          {/* scrolling equirectangular night texture = axial rotation (brightened);
-              carries the blinking Bangladesh markers so they track the rotation */}
+          {/* rotating surface — two identical copies of the equirectangular night
+              texture laid side by side, translated left→right by exactly one copy
+              width so the wrap is seamless (axial spin, globe stays put). Bangladesh
+              rides INSIDE each copy at its real spot on a 2:1 map (90.4°E,23.7°N →
+              75.1% across, 36.8% down), so it sweeps in with the Asia region, blinks
+              as it crosses, then rotates out of view — once per revolution. */}
           <motion.div
-            className="absolute inset-0"
-            style={{ backgroundImage: "url(/earth-night.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "210%", backgroundPosition: "74% 34%", filter: "brightness(1.7) saturate(1.25) contrast(1.05)" }}
-            initial={{ scale: 1.04 }}
-            animate={{ scale: [1.04, 1.08, 1.04] }}
-            transition={{ duration: 24, ease: "easeInOut", repeat: Infinity }}
+            className="absolute left-0 top-0 flex h-full"
+            style={{ width: "400%" }}
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ duration: 40, ease: "linear", repeat: Infinity }}
+          >
+            {[0, 1].map((k) => (
+              <div key={k} className="relative h-full" style={{ width: "50%" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/earth-night.jpg"
+                  alt=""
+                  className="h-full w-full object-cover"
+                  style={{ filter: "brightness(1.8) saturate(1.4) contrast(1.1)" }}
+                />
+                {/* Bangladesh pinned to the surface at its true lat/long */}
+                <div
+                  className="pointer-events-none absolute"
+                  style={{ left: "75.1%", top: "36.8%", height: "8%", aspectRatio: "748 / 1036", transform: "translate(-50%,-50%)" }}
+                >
+                  <BangladeshMap className="h-full w-full opacity-95 drop-shadow-[0_0_4px_rgba(74,222,128,0.7)]" />
+                </div>
+              </div>
+            ))}
+          </motion.div>
+          {/* ── cinematic lighting: fixed in space while the surface rotates beneath,
+              so the sun and day/night terminator stay put like the real thing ── */}
+          {/* gentle night-side depth — a soft shadow on the far left limb so the
+              globe reads round, without dimming the city lights across it. */}
+          <div
+            className="pointer-events-none absolute inset-0 rounded-full"
+            style={{ background: "linear-gradient(113.5deg, rgba(2,6,20,0.45) 0%, rgba(2,6,20,0.22) 30%, rgba(2,6,20,0.04) 55%, rgba(0,0,0,0) 72%)", mixBlendMode: "multiply" }}
           />
-          {/* soft blue daylight wash so the globe isn't too dark */}
-          <div className="pointer-events-none absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle at 34% 30%, rgba(125,211,252,0.35) 0%, rgba(59,130,246,0.12) 45%, rgba(0,0,0,0) 70%)", mixBlendMode: "screen" }} />
-          {/* gentle spherical shading + cyan atmosphere rim */}
+          {/* faint moonlit / atmospheric wash on the sunward limb — kept subtle so it
+              never washes out the city lights */}
+          <div
+            className="pointer-events-none absolute inset-0 rounded-full"
+            style={{ background: "radial-gradient(120% 120% at 82% 26%, rgba(191,219,254,0.20) 0%, rgba(96,165,250,0.10) 34%, rgba(0,0,0,0) 60%)", mixBlendMode: "screen" }}
+          />
+          {/* spherical shading + thin blue atmospheric rim (bright on the sunlit limb,
+              dark on the night limb) */}
           <div
             className="pointer-events-none absolute inset-0 rounded-full"
             style={{
-              background: "radial-gradient(circle at 30% 26%, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0) 40%), radial-gradient(circle at 80% 86%, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0) 66%)",
-              boxShadow: "inset 0 0 30px rgba(34,211,238,0.5), inset -8px -10px 24px rgba(0,0,0,0.4)",
+              background: "radial-gradient(circle at 78% 24%, rgba(255,255,255,0.26) 0%, rgba(0,0,0,0) 34%), radial-gradient(circle at 20% 82%, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 60%)",
+              boxShadow: "inset 12px 0 30px rgba(2,6,23,0.6), inset -8px 0 22px rgba(147,197,253,0.42), inset 0 0 20px rgba(125,211,252,0.35)",
             }}
           />
-          {/* Bangladesh — subtle drawn outline with a blinking border, on the zoomed region */}
-          <div className="pointer-events-none absolute inset-0 grid place-items-center">
-            <BangladeshMap className="h-[46%] w-[46%] drop-shadow-[0_0_8px_rgba(74,222,128,0.55)]" />
-          </div>
           {/* current value — fixed in the middle of the Earth */}
           <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center text-center">
             <div className="px-2">

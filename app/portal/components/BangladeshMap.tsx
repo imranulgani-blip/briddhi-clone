@@ -9,7 +9,8 @@ const BD_PATH =
 
 export default function BangladeshMap({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet" className={className} style={style}>
+    // viewBox cropped to Bangladesh's true bounding box → exact aspect ratio (~0.72)
+    <svg viewBox="138 -6 748 1036" preserveAspectRatio="xMidYMid meet" className={className} style={style}>
       <g transform="translate(0,1024) scale(0.1,-0.1)">
         <path d={BD_PATH} fill="rgba(34,197,94,0.20)" stroke="none" />
         <motion.path
