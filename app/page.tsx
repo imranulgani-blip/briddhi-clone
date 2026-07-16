@@ -152,7 +152,7 @@ export default function Home() {
             "radial-gradient(900px 380px at 50% 118%, rgba(245,130,30,0.20), transparent 62%)," +
             "radial-gradient(1200px 520px at 50% -12%, rgba(14,80,160,0.30), transparent 60%)," +
             "linear-gradient(180deg, rgba(5,7,13,0.68) 0%, rgba(5,7,13,0.52) 38%, rgba(5,7,13,0.96) 100%)," +
-            "url('/hero-bg.jpg')",
+            "url('/hero-3.jpg')",
           backgroundColor: "#060a14",
           backgroundSize: "cover",
           backgroundPosition: "center",

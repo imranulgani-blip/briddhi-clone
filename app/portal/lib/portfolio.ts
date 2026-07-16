@@ -99,7 +99,9 @@ export function computePortfolio(
   const riskMap = new Map<string, number>();
   const typeMap = new Map<string, number>();
   const assetMap = new Map<string, number>();
+  const sectorMap = new Map<string, number>();
   let anyAssetClass = false;
+  let anySector = false;
   for (const t of txns) {
     const fund = fundById.get(t.fund_id);
     fundMap.set(fund?.name ?? t.fund_name, (fundMap.get(fund?.name ?? t.fund_name) ?? 0) + t.amount);
@@ -110,6 +112,10 @@ export function computePortfolio(
       anyAssetClass = true;
       assetMap.set(fund.asset_class, (assetMap.get(fund.asset_class) ?? 0) + t.amount);
     }
+    if (fund?.sector) {
+      anySector = true;
+      sectorMap.set(fund.sector, (sectorMap.get(fund.sector) ?? 0) + t.amount);
+    }
   }
   const allocations: Allocations = {
     byFund: slices(fundMap, totalInvested),
@@ -117,6 +123,7 @@ export function computePortfolio(
     byRisk: slices(riskMap, totalInvested),
     byType: slices(typeMap, totalInvested),
     byAssetClass: anyAssetClass ? slices(assetMap, totalInvested) : null,
+    bySector: anySector ? slices(sectorMap, totalInvested) : null,
   };
 
   // ---- KPIs ----

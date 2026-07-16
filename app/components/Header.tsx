@@ -20,7 +20,7 @@ export default function Header() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   // These routes ship their own light-mode chrome.
-  if (["/draft", "/learn", "/funds", "/pms"].some((p) => pathname.startsWith(p))) return null;
+  if (["/draft", "/learn", "/funds", "/pms", "/portal", "/basket"].some((p) => pathname.startsWith(p))) return null;
 
   return (
     <header className="sticky top-0 z-40 border-b border-ink-700/40 bg-ink-950/70 backdrop-blur-lg">

@@ -12,6 +12,12 @@ export interface Person {
   credential?: string;
 }
 
+export interface Md {
+  name: string;
+  title: string;
+  bio: string;
+}
+
 export interface Amc {
   slug: string; // matches /fund-logos/<slug>.png
   name: string;
@@ -19,6 +25,7 @@ export interface Amc {
   philosophy: string;
   blurb: string;
   team: Person[];
+  md: Md; // current Managing Director / CEO (researched from the AMC's site & press)
   color: string; // brand accent for this AMC's themed pages
   soft: string; // very light tint of the accent (section backgrounds)
 }
@@ -82,6 +89,11 @@ export const AMCS: Record<string, Amc> = {
       { name: "Khandakar Safwan Saad", title: "Chief Investment Officer", credential: "CFA" },
       { name: "S. M. Sadekul Islam", title: "Manager, Finance & Operations" },
     ],
+    md: {
+      name: "Ali Imam, CFA",
+      title: "Founder & CEO",
+      bio: "Founder and CEO of EDGE AMC and a CFA charterholder, with a background in investment research and management at BRAC EPL Stock Brokerage and Eastern Bank.",
+    },
     color: "#0E50A0", // EDGE — blue
     soft: "#EEF4FC",
   },
@@ -96,6 +108,11 @@ export const AMCS: Record<string, Amc> = {
     team: [
       { name: "Ekush Investment Committee", title: "Portfolio Management", credential: "3× FCA · 3× CFA" },
     ],
+    md: {
+      name: "Kazi Ahsan Maruf, CFA",
+      title: "Managing Director",
+      bio: "Managing Director of Ekush and a CFA charterholder with 17+ years in investment management; previously CEO of IL Capital. BBA in Finance from the University of Dhaka.",
+    },
     color: "#F5821E", // Ekush — orange
     soft: "#FFF4EA",
   },
@@ -108,6 +125,11 @@ export const AMCS: Record<string, Amc> = {
     blurb:
       "Founded and led by seasoned capital market professionals and fully licensed by BSEC, Investit offers professional fund management and investment advisory, with SIP options and regular performance reporting.",
     team: [{ name: "Investit Investment Team", title: "Fund Management", credential: "Capital-market professionals" }],
+    md: {
+      name: "Mohammad Emran Hasan",
+      title: "Founder, MD & CEO",
+      bio: "Founder, Managing Director & CEO of Investit with 16+ years in fund and risk management. Previously founding CEO of Shanta Asset Management, which won BSEC's ‘Best Asset Management Company’ award. MBA, University of Dhaka; BSc in Mechanical Engineering, BUET.",
+    },
     color: "#12A150", // Investit — green
     soft: "#ECFDF3",
   },
@@ -120,6 +142,11 @@ export const AMCS: Record<string, Amc> = {
     blurb:
       "A subsidiary of Midland Bank PLC, Midland Bank Asset Management brings bank-grade governance to mutual-fund investing in Bangladesh, with a professional team focused on local and global market opportunities.",
     team: [{ name: "Midland AMC Investment Team", title: "Fund Management", credential: "Backed by Midland Bank PLC" }],
+    md: {
+      name: "Mohammad Samir Uddin",
+      title: "Chief Executive Officer",
+      bio: "CEO of Midland Bank Asset Management with 14+ years in Bangladesh's capital market and banking. Previously CEO of Shahjalal Asset Management and MBL Asset Management.",
+    },
     color: "#EF6461", // Midland — light red
     soft: "#FEF2F2",
   },

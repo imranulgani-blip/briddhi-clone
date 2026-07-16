@@ -12,10 +12,9 @@ export const BRAND_ORANGE = "#F5821E";
 
 const NAV = [
   { label: "Funds", href: "/funds" },
+  { label: "Briddhi Basket", href: "/basket" },
   { label: "Learn to Invest", href: "/learn" },
   { label: "Advisors", href: "#advisors" },
-  { label: "PMS", href: "/pms" },
-  { label: "Co-Invest", href: "#" },
   { label: "More", href: "#" },
 ];
 

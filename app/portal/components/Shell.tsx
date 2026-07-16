@@ -7,6 +7,7 @@ import { usePortal } from "../lib/PortalContext";
 
 const NAV = [
   { href: "/portal/dashboard", label: "Dashboard", icon: "grid" },
+  { href: "/portal/allocation", label: "Wealth Universe", icon: "pie" },
   { href: "/portal/statements", label: "Statements", icon: "doc" },
   { href: "/portal/notifications", label: "Notifications", icon: "bell" },
   { href: "/portal/settings", label: "Settings", icon: "gear" },
@@ -24,7 +25,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   }, [ready, investor, isLogin, router]);
 
   if (!ready) {
-    return <div className="grid min-h-[60vh] place-items-center text-ink-400">Loading…</div>;
+    return <div className="grid min-h-[60vh] place-items-center text-slate-500">Loading…</div>;
   }
   if (isLogin) return <>{children}</>;
   if (!investor) return null;
@@ -33,7 +34,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     <div className="mx-auto flex max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:px-8">
       {/* Sidebar */}
       <aside className="no-print sticky top-20 hidden h-fit w-56 shrink-0 md:block">
-        <div className="surface p-2">
+        <div className="lcard p-2">
           <nav className="flex flex-col gap-1">
             {NAV.map((item) => {
               const active = pathname.startsWith(item.href);
@@ -42,7 +43,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                    active ? "bg-ink-700/60 text-neon-400" : "text-ink-300 hover:bg-ink-800/60 hover:text-ink-100"
+                    active ? "bg-orange-50 text-[#F5821E]" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
                   <NavIcon name={item.icon} />
@@ -52,16 +53,16 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
         </div>
-        <div className="surface mt-3 p-4">
-          <div className="text-xs text-ink-400">Signed in as</div>
-          <div className="mt-1 truncate font-semibold text-ink-100">{investor.name}</div>
-          <div className="mono text-xs text-ink-500">{investor.id}</div>
+        <div className="lcard mt-3 p-4">
+          <div className="text-xs text-slate-500">Signed in as</div>
+          <div className="mt-1 truncate font-semibold text-slate-900">{investor.name}</div>
+          <div className="mono text-xs text-slate-400">{investor.id}</div>
           <button
             onClick={() => {
               signOut();
               router.replace("/portal/login");
             }}
-            className="mt-3 w-full rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-1.5 text-xs text-ink-200 hover:bg-ink-700/70"
+            className="mt-3 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 hover:bg-slate-100"
           >
             Switch investor
           </button>
@@ -69,7 +70,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Mobile top nav */}
-      <div className="no-print fixed inset-x-0 bottom-0 z-30 border-t border-ink-700/40 bg-ink-950/90 backdrop-blur md:hidden">
+      <div className="no-print fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur md:hidden">
         <div className="flex justify-around">
           {NAV.map((item) => {
             const active = pathname.startsWith(item.href);
@@ -78,7 +79,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] ${
-                  active ? "text-neon-400" : "text-ink-400"
+                  active ? "text-[#F5821E]" : "text-slate-500"
                 }`}
               >
                 <NavIcon name={item.icon} />
@@ -120,6 +121,13 @@ function NavIcon({ name }: { name: string }) {
         <svg {...c}>
           <path d="M7 3h7l5 5v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z" />
           <path d="M14 3v5h5" />
+        </svg>
+      );
+    case "pie":
+      return (
+        <svg {...c}>
+          <path d="M21 15.5A9 9 0 118.5 3v9H21z" />
+          <path d="M21 12a9 9 0 00-9-9v9z" />
         </svg>
       );
     case "bell":

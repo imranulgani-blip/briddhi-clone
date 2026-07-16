@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PortalProvider } from "./lib/PortalContext";
 import Shell from "./components/Shell";
+import { LightHeader } from "../components/LightChrome";
 
 export const metadata: Metadata = {
   title: "Investor Portal — Briddhi",
@@ -9,8 +10,11 @@ export const metadata: Metadata = {
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <PortalProvider>
-      <Shell>{children}</Shell>
-    </PortalProvider>
+    <div className="min-h-screen bg-[#F7F8FB] text-slate-900" style={{ colorScheme: "light" }}>
+      <PortalProvider>
+        <LightHeader />
+        <Shell>{children}</Shell>
+      </PortalProvider>
+    </div>
   );
 }

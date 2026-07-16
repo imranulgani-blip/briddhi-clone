@@ -35,7 +35,7 @@ const COLUMNS = [
 
 export default function Footer() {
   const pathname = usePathname();
-  if (["/draft", "/learn", "/funds", "/pms"].some((p) => pathname.startsWith(p))) return null;
+  if (["/draft", "/learn", "/funds", "/pms", "/portal"].some((p) => pathname.startsWith(p))) return null;
   return (
     <footer className="mt-16 border-t border-ink-700/40 bg-ink-950/60">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

@@ -14,19 +14,19 @@ export default function ActivityTable({ activity }: { activity: Activity }) {
     { label: "Closing value", value: activity.closingValue ?? activity.closingInvested },
   ];
   return (
-    <div className="surface p-5">
+    <div className="lcard p-5">
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold text-ink-100">Account activity</div>
-        <span className="text-xs text-ink-400">{activity.periodLabel}</span>
+        <div className="text-sm font-semibold text-slate-900">Account activity</div>
+        <span className="text-xs text-slate-500">{activity.periodLabel}</span>
       </div>
       <table className="mt-3 w-full text-sm">
         <tbody>
           {rows.map((r) => (
-            <tr key={r.label} className="border-t border-ink-700/30">
-              <td className="py-2 text-ink-300">
+            <tr key={r.label} className="border-t border-slate-100">
+              <td className="py-2 text-slate-600">
                 {r.label}
                 {r.label === "Closing value" && activity.closingValue == null && (
-                  <span className="ml-1 text-xs text-ink-500">(at cost)</span>
+                  <span className="ml-1 text-xs text-slate-400">(at cost)</span>
                 )}
               </td>
               <td className="py-2 text-right">
@@ -36,10 +36,10 @@ export default function ActivityTable({ activity }: { activity: Activity }) {
                   <span
                     className={`mono ${
                       r.tone === "pos" && r.value !== 0
-                        ? "text-neon-400"
+                        ? "text-[#F5821E]"
                         : r.tone === "neg" && r.value !== 0
-                        ? "text-rose-400"
-                        : "text-ink-100"
+                        ? "text-rose-600"
+                        : "text-slate-900"
                     }`}
                   >
                     {bdt(r.value)}
@@ -50,7 +50,7 @@ export default function ActivityTable({ activity }: { activity: Activity }) {
           ))}
         </tbody>
       </table>
-      <p className="mt-3 text-xs text-ink-500">
+      <p className="mt-3 text-xs text-slate-400">
         Opening/closing shown at invested cost; market gain/loss and market closing value require NAV
         data (not in source).
       </p>

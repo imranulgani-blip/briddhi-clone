@@ -14,6 +14,80 @@ const riskColor: Record<string, { bg: string; fg: string }> = {
   High: { bg: "#fef2f2", fg: "#dc2626" },
 };
 
+// Holding "logo": colour by sector + a short monogram (real logos can replace these).
+const SECTOR_COLOR: Record<string, string> = {
+  "Govt. Securities": "#0E50A0",
+  FDR: "#0d9488",
+  "Cash & FDR": "#0d9488",
+  "Corporate Bond": "#6366f1",
+  Cash: "#64748b",
+  "Money Market": "#f59e0b",
+  "Pharma & Chemicals": "#16a34a",
+  Telecom: "#0ea5e9",
+  "Banks & NBFI": "#7c3aed",
+  "Islamic Banking": "#059669",
+  "Consumer & Food": "#f97316",
+  "Cement & Materials": "#78716c",
+  Ceramics: "#ec4899",
+};
+const holdingColor = (h: Holding) => SECTOR_COLOR[h.sector] ?? "#64748b";
+const holdingMono = (h: Holding) => {
+  if (h.ticker) return h.ticker.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase();
+  const stop = new Set(["the", "of", "and", "(multiple", "banks)", "&"]);
+  const words = h.name.split(/\s+/).filter((w) => w.length > 1 && !stop.has(w.toLowerCase()));
+  return ((words[0]?.[0] ?? "") + (words[1]?.[0] ?? "")).toUpperCase() || h.name.slice(0, 2).toUpperCase();
+};
+
+// Person photo from /public/managers/<name-slug>.png when present, else a coloured initial.
+function personSlug(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/,.*$/, "")
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+function PersonAvatar({ name, color, size }: { name: string; color: string; size: number }) {
+  const [err, setErr] = useState(false);
+  const initial = (name.match(/[A-Za-z]/)?.[0] ?? name.slice(0, 1)).toUpperCase();
+  if (!err) {
+    return (
+      <span className="shrink-0 overflow-hidden rounded-full ring-1 ring-slate-200" style={{ width: size, height: size }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`/managers/${personSlug(name)}.png`} alt={name} className="h-full w-full object-cover" onError={() => setErr(true)} />
+      </span>
+    );
+  }
+  return (
+    <span
+      className="grid shrink-0 place-items-center rounded-full font-bold text-white"
+      style={{ width: size, height: size, background: color, fontSize: size * 0.38 }}
+    >
+      {initial}
+    </span>
+  );
+}
+
+// Shows the real company logo from /public/holdings/<ticker>.png when present,
+// otherwise falls back to the sector-coloured monogram.
+function HoldingBadge({ h }: { h: Holding }) {
+  const [err, setErr] = useState(false);
+  const slug = h.ticker ? h.ticker.toLowerCase().replace(/[^a-z0-9]/g, "") : null;
+  if (slug && !err) {
+    return (
+      <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-white ring-1 ring-slate-200">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`/holdings/${slug}.png`} alt="" className="h-7 w-7 object-contain" onError={() => setErr(true)} />
+      </span>
+    );
+  }
+  return (
+    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[11px] font-bold text-white" style={{ background: holdingColor(h) }}>
+      {holdingMono(h)}
+    </span>
+  );
+}
+
 export default function FundDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const fund = getFund(id);
@@ -125,7 +199,7 @@ export default function FundDetailPage({ params }: { params: Promise<{ id: strin
         {/* TOP HOLDINGS */}
         <Card className="mt-5">
           <div className="flex items-center justify-between">
-            <H>Top 10 holdings</H>
+            <H>Top 5 holdings</H>
             <span className="text-xs text-slate-400">% of NAV</span>
           </div>
           <div className="mt-4 overflow-x-auto">
@@ -139,14 +213,19 @@ export default function FundDetailPage({ params }: { params: Promise<{ id: strin
                 </tr>
               </thead>
               <tbody>
-                {fund.topHoldings.map((h: Holding, i) => (
+                {fund.topHoldings.slice(0, 5).map((h: Holding, i) => (
                   <tr key={h.name} className="border-t border-slate-100">
-                    <td className="py-2.5 text-slate-400">{i + 1}</td>
-                    <td className="py-2.5">
-                      <div className="font-medium text-slate-900">{h.name}</div>
-                      {h.ticker && <div className="font-mono text-[11px] text-slate-400">{h.ticker}</div>}
+                    <td className="py-3 text-slate-400">{i + 1}</td>
+                    <td className="py-3">
+                      <div className="flex items-center gap-3">
+                        <HoldingBadge h={h} />
+                        <div>
+                          <div className="font-medium text-slate-900">{h.name}</div>
+                          {h.ticker && <div className="font-mono text-[11px] text-slate-400">{h.ticker}</div>}
+                        </div>
+                      </div>
                     </td>
-                    <td className="py-2.5 text-slate-500">{h.sector}</td>
+                    <td className="py-3 text-slate-500">{h.sector}</td>
                     <td className="py-2.5">
                       <div className="flex items-center justify-end gap-2">
                         <span className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-slate-100 sm:block">
@@ -167,20 +246,23 @@ export default function FundDetailPage({ params }: { params: Promise<{ id: strin
           <Card>
             <H>Fund manager</H>
             <div className="mt-3 flex items-center gap-3">
-              <span className="grid h-12 w-12 place-items-center rounded-full text-lg font-bold text-white" style={{ background: BLUE }}>
-                {fund.managerName.slice(0, 1)}
-              </span>
+              <PersonAvatar name={amc.md.name} color={theme} size={56} />
               <div>
-                <div className="font-semibold text-slate-900">{fund.managerName}</div>
-                <div className="text-sm text-slate-500">{amc.name}</div>
+                <div className="font-semibold text-slate-900">{amc.md.name}</div>
+                <div className="text-sm" style={{ color: theme }}>{amc.md.title}</div>
+                <div className="text-xs text-slate-400">{amc.name}</div>
               </div>
             </div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">{amc.md.bio}</p>
             <div className="mt-4 border-t border-slate-100 pt-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Investment team</div>
-              <ul className="mt-2 space-y-1.5 text-sm">
-                {amc.team.map((p) => (
-                  <li key={p.name} className="flex items-center justify-between gap-3">
-                    <span className="text-slate-700">
+              <ul className="mt-3 space-y-2.5 text-sm">
+                {amc.team
+                  .filter((p) => !amc.md.name.toLowerCase().startsWith(p.name.toLowerCase()))
+                  .map((p) => (
+                  <li key={p.name} className="flex items-center gap-3">
+                    <PersonAvatar name={p.name} color={theme} size={34} />
+                    <span className="min-w-0 flex-1 text-slate-700">
                       {p.name}
                       <span className="text-slate-400"> · {p.title}</span>
                     </span>

@@ -83,49 +83,49 @@ export default function StatementsPage() {
     <div className="space-y-6">
       <div className="no-print">
         <h1 className="text-2xl font-bold tracking-tight">Statements &amp; Reports</h1>
-        <p className="text-sm text-ink-400">
+        <p className="text-sm text-slate-500">
           Generate an EKUSH-style portfolio statement and tax report for any period, then download as PDF.
         </p>
       </div>
 
       {/* Controls */}
-      <div className="no-print surface flex flex-wrap items-end gap-4 p-4">
-        <label className="text-xs text-ink-400">
+      <div className="no-print lcard flex flex-wrap items-end gap-4 p-4">
+        <label className="text-xs text-slate-500">
           From
           <input
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="mt-1 block rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-2 text-sm text-ink-100"
+            className="mt-1 block rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           />
         </label>
-        <label className="text-xs text-ink-400">
+        <label className="text-xs text-slate-500">
           To
           <input
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="mt-1 block rounded-lg border border-ink-600 bg-ink-800/60 px-3 py-2 text-sm text-ink-100"
+            className="mt-1 block rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           />
         </label>
-        <label className="flex items-center gap-2 text-sm text-ink-300">
+        <label className="flex items-center gap-2 text-sm text-slate-600">
           <input type="checkbox" checked={showTax} onChange={(e) => setShowTax(e.target.checked)} />
           Include tax report
         </label>
         <button
           onClick={handleDownload}
           disabled={!data}
-          className="ml-auto rounded-lg bg-neon-400 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-neon-500 disabled:opacity-50"
+          className="ml-auto rounded-lg bg-[#F5821E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e0761a] disabled:opacity-50"
         >
           Download PDF ↓
         </button>
       </div>
-      <p className="no-print -mt-2 text-xs text-ink-500">
+      <p className="no-print -mt-2 text-xs text-slate-400">
         Opens the print dialog — choose <strong>“Save as PDF”</strong> as the destination.
       </p>
 
-      {error && <div className="surface border-amber-500/40 p-6 text-amber-200">{error}</div>}
-      {loading && <div className="text-ink-400">Generating statement…</div>}
+      {error && <div className="lcard border-amber-200 bg-amber-50 p-6 text-amber-700">{error}</div>}
+      {loading && <div className="text-slate-500">Generating statement…</div>}
 
       {data && (
         <div id="statement-doc" className="print-area">
