@@ -15,6 +15,8 @@ const NAV = [
   { label: "Briddhi Basket", href: "/basket" },
   { label: "Learn to Invest", href: "/learn" },
   { label: "Advisors", href: "#advisors" },
+  { label: "PMS", href: "/pms" },
+  { label: "Co-Invest", href: "/pms#co-invest" },
   { label: "More", href: "#" },
 ];
 

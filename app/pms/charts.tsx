@@ -2,7 +2,7 @@
 
 import { PRIME_RED, type Returns, type Slice } from "../data/pms";
 
-const DONUT_PALETTE = [PRIME_RED, "#0E50A0", "#0d9488", "#f59e0b", "#94a3b8"];
+const DONUT_PALETTE = [PRIME_RED, "#F5821E", "#0d9488", "#f59e0b", "#94a3b8"];
 
 // ---------------------------------------------------------------------------
 // Allocation donut

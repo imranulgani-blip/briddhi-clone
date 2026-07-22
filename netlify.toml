@@ -1,0 +1,18 @@
+# Netlify configuration for Briddhi Studio (Next.js 15, App Router).
+#
+# This site is NOT a static export — app/api/* route handlers and the dynamic
+# portal pages need a server runtime. Netlify auto-detects Next.js and installs
+# the Next.js Runtime, which turns those routes into serverless functions.
+#
+# Environment variables are NOT set here (they are secrets). Add them in the
+# Netlify UI: Site configuration → Environment variables.
+#   NEXT_PUBLIC_SUPABASE_URL       (exposed to the browser)
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY  (exposed to the browser)
+#   SUPABASE_SERVICE_ROLE_KEY      (server only — never prefix with NEXT_PUBLIC_)
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"

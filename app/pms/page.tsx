@@ -22,6 +22,8 @@ import {
 } from "../data/pms";
 import { LightHeader, LightFooter } from "../components/LightChrome";
 import { Donut, GrowthLine, MiniBars, HBar } from "./charts";
+import CoInvest from "./CoInvest";
+import PrimeInvestShowcase from "./PrimeInvestShowcase";
 
 const riskColor: Record<string, { bg: string; fg: string }> = {
   Low: { bg: "#ecfdf5", fg: "#059669" },
@@ -43,16 +45,27 @@ export default function PmsPage() {
     <div className="min-h-screen bg-[#F7F8FB] text-slate-900" style={{ colorScheme: "light" }}>
       <LightHeader />
 
+      {/* ============================================================
+          TOP: full PrimeInvest showcase — every scheme, point & line,
+          animated. The 70:30 co-invest fund lives here, followed by the
+          interactive Co-Invest explainer. Everything below is the
+          original PMS analytics page, moved to the bottom.
+          ============================================================ */}
+      <PrimeInvestShowcase />
+      <CoInvest />
+
+      {/* ORIGINAL PMS PAGE (moved below) */}
+
       {/* HERO */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #3a0a13 0%, #7f1020 100%)" }}>
-        <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full" style={{ background: "rgba(200,16,46,0.45)", filter: "blur(70px)" }} />
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(180deg, #072b57 0%, #0A3A75 100%)" }}>
+        <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full" style={{ background: "rgba(245,130,30,0.40)", filter: "blur(70px)" }} />
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-2 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white/90 backdrop-blur">
               🤝 Powered by {PBIL.name}
             </span>
             <h1 className="mt-5 max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              Portfolio Management, <span style={{ color: "#ff8ba0" }}>measured.</span>
+              Portfolio Management, <span style={{ color: "#ffb877" }}>measured.</span>
             </h1>
             <p className="mt-5 max-w-lg text-lg text-white/70">
               Compare every PrimeInvest scheme by real return periods, see the analytics, and let Bangladesh&apos;s
@@ -204,7 +217,7 @@ export default function PmsPage() {
                         <td key={p.key} className="py-3 text-right">
                           <span
                             className="inline-block rounded-md px-2 py-1 font-semibold tabular-nums"
-                            style={{ background: `rgba(200,16,46,${0.06 + (v / colMax) * 0.16})`, color: best ? RED : "#0f172a", outline: best ? `1px solid ${RED}` : "none" }}
+                            style={{ background: `rgba(14,80,160,${0.06 + (v / colMax) * 0.16})`, color: best ? RED : "#0f172a", outline: best ? `1px solid ${RED}` : "none" }}
                           >
                             {v}%
                           </span>
@@ -269,7 +282,7 @@ export default function PmsPage() {
           </Reveal>
           <Reveal delay={0.1}>
             <div className="h-full rounded-3xl bg-slate-900 p-8 text-white">
-              <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#ff8ba0" }}>Track record</div>
+              <div className="text-xs font-bold uppercase tracking-wide" style={{ color: "#ffb877" }}>Track record</div>
               <h3 className="mt-1 text-2xl font-bold">A merchant bank you can trust</h3>
               <div className="mt-6 grid grid-cols-1 gap-4">
                 {PBIL.track.map((t) => (
@@ -297,7 +310,7 @@ export default function PmsPage() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl px-8 py-14 text-center text-white shadow-xl" style={{ background: "linear-gradient(120deg, #7f1020, #c8102e)" }}>
+        <div className="relative overflow-hidden rounded-3xl px-8 py-14 text-center text-white shadow-xl" style={{ background: "linear-gradient(120deg, #0A3A75, #0E50A0)" }}>
           <h2 className="relative text-3xl font-bold tracking-tight sm:text-4xl">Let the experts manage it for you.</h2>
           <p className="relative mx-auto mt-3 max-w-xl text-white/80">Open a PrimeInvest PMS account with Prime Bank Investment and put a professional team on your portfolio.</p>
           <div className="relative mt-8 flex flex-wrap justify-center gap-3">
@@ -427,7 +440,7 @@ function SchemeModal({ scheme, onClose }: { scheme: Scheme; onClose: () => void 
         className="my-8 w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl"
       >
         {/* header */}
-        <div className="flex items-center justify-between gap-3 p-6 text-white" style={{ background: `linear-gradient(120deg, #7f1020, ${RED})` }}>
+        <div className="flex items-center justify-between gap-3 p-6 text-white" style={{ background: `linear-gradient(120deg, #0A3A75, ${RED})` }}>
           <div className="flex items-center gap-3">
             <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 text-2xl">{scheme.icon}</span>
             <div>

@@ -178,18 +178,19 @@ export const SCHEMES: Scheme[] = [
   {
     id: "equity-sharing",
     name: "Equity Sharing",
-    tagline: "Direct equity, professionally run",
+    tagline: "Co-invest 70:30 — shared risk, shared reward",
     objective: "growth",
-    bestFor: "Investors who want equity exposure with expert management.",
+    bestFor: "Investors who want PBIL to put its own capital alongside theirs.",
     risk: "High",
     indicativeReturn: "14–16%",
-    minInvestment: "৳5,00,000",
+    minInvestment: "৳2,00,000",
     fee: "1.5–2.0%",
-    icon: "📈",
+    icon: "🤝",
     features: [
-      "Concentrated exposure to listed equities",
-      "Active stock selection by PBIL's committee",
-      "Transparent, shared-growth structure",
+      "Capital, profit and loss shared 70:30 (you : PBIL)",
+      "PBIL co-invests its own money alongside yours — aligned interests",
+      "Actively managed by PBIL's investment committee",
+      "Minimum ৳2,00,000 · flexible tenure of 2 years or more",
     ],
   },
   {
@@ -304,9 +305,12 @@ export const HOW_IT_WORKS = [
 // ---------------------------------------------------------------------------
 // Prime Bank co-brand palette
 // ---------------------------------------------------------------------------
-export const PRIME_RED = "#C8102E";
-export const PRIME_SOFT = "#FDECEE";
-export const PRIME_DARK = "#7f1020";
+// Briddhi brand palette (blue primary, orange accent). Kept the PRIME_* names
+// so the rest of the page keeps working; values are now Briddhi's own theme.
+export const PRIME_RED = "#0E50A0"; // Briddhi blue (primary)
+export const PRIME_SOFT = "#EEF4FB"; // light blue tint
+export const PRIME_DARK = "#0A3A75"; // deep navy
+export const PRIME_ORANGE = "#F5821E"; // Briddhi orange (accent)
 
 // ---------------------------------------------------------------------------
 // Performance data (INDICATIVE / representative — for comparison visuals).
