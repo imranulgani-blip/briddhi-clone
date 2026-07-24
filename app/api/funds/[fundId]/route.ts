@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isSupabaseConfigured } from "../../../lib/supabase/server";
 import { getFunds, getInvestor, getTransactions, todayIso } from "../../../portal/lib/queries";
 import { computePortfolio } from "../../../portal/lib/portfolio";
+import { DEMO_FUNDS, demoTransactions, getDemoInvestor } from "../../../portal/lib/demoData";
 
 export const dynamic = "force-dynamic";
 
@@ -11,9 +12,6 @@ export async function GET(
   req: Request,
   ctx: { params: Promise<{ fundId: string }> }
 ) {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured. Add .env.local." }, { status: 503 });
-  }
   try {
     const { fundId } = await ctx.params;
     const url = new URL(req.url);
@@ -23,11 +21,10 @@ export async function GET(
     }
     const id = Number(fundId);
 
-    const [investor, funds, transactions] = await Promise.all([
-      getInvestor(investorId),
-      getFunds(),
-      getTransactions(investorId),
-    ]);
+    const demo = !isSupabaseConfigured();
+    const [investor, funds, transactions] = demo
+      ? [getDemoInvestor(investorId), DEMO_FUNDS, demoTransactions(investorId)]
+      : await Promise.all([getInvestor(investorId), getFunds(), getTransactions(investorId)]);
     if (!investor) return NextResponse.json({ error: "Investor not found" }, { status: 404 });
     const fund = funds.find((f) => f.id === id);
     if (!fund) return NextResponse.json({ error: "Fund not found" }, { status: 404 });

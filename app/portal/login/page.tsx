@@ -6,7 +6,7 @@ import { usePortal } from "../lib/PortalContext";
 import { useFetch } from "../lib/useFetch";
 import type { Investor } from "../lib/types";
 
-const FEATURED = ["BFT001", "BFT004", "BFT016", "BFT024", "BFT008"];
+const FEATURED = ["BINV001", "BINV003", "BINV002", "BINV004", "BINV006"];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function LoginPage() {
         </h1>
         <p className="mt-3 text-slate-600">
           Pick an investor to open their consolidated multi-AMC dashboard. This is a demo picker — no
-          password required. Data is real (loaded from the Briddhi ledger).
+          password required. Figures shown are illustrative sample data for design review.
         </p>
       </div>
 

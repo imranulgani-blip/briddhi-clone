@@ -1,22 +1,17 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "../../lib/supabase/server";
+import { demoNotifications } from "../../portal/lib/demoData";
 
 export const dynamic = "force-dynamic";
 
-function guard() {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured. Add .env.local." }, { status: 503 });
-  }
-  return null;
-}
+const DEMO = !isSupabaseConfigured();
 
 // GET /api/notifications?investorId=BFT001
 export async function GET(req: Request) {
-  const g = guard();
-  if (g) return g;
   try {
     const investorId = new URL(req.url).searchParams.get("investorId");
     if (!investorId) return NextResponse.json({ error: "investorId required" }, { status: 400 });
+    if (DEMO) return NextResponse.json({ notifications: demoNotifications(investorId) });
     const db = getSupabaseAdmin();
     const { data, error } = await db
       .from("notifications")
@@ -32,10 +27,9 @@ export async function GET(req: Request) {
 
 // PATCH /api/notifications  { id?, investorId?, markAllRead? }
 export async function PATCH(req: Request) {
-  const g = guard();
-  if (g) return g;
   try {
     const body = await req.json();
+    if (DEMO) return NextResponse.json({ ok: true });
     const db = getSupabaseAdmin();
     const nowIso = new Date().toISOString();
     if (body.markAllRead && body.investorId) {

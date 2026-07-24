@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "../../../lib/supabase/server";
+import { demoPreferences } from "../../../portal/lib/demoData";
 
 export const dynamic = "force-dynamic";
+
+const DEMO = !isSupabaseConfigured();
 
 const DEFAULTS = {
   push: true,
@@ -12,20 +15,12 @@ const DEFAULTS = {
   curated_lists: false,
 };
 
-function guard() {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase not configured. Add .env.local." }, { status: 503 });
-  }
-  return null;
-}
-
 // GET /api/notifications/preferences?investorId=BFT001
 export async function GET(req: Request) {
-  const g = guard();
-  if (g) return g;
   try {
     const investorId = new URL(req.url).searchParams.get("investorId");
     if (!investorId) return NextResponse.json({ error: "investorId required" }, { status: 400 });
+    if (DEMO) return NextResponse.json({ preferences: demoPreferences(investorId) });
     const db = getSupabaseAdmin();
     const { data, error } = await db
       .from("notification_preferences")
@@ -41,8 +36,6 @@ export async function GET(req: Request) {
 
 // PATCH /api/notifications/preferences  { investorId, ...toggles }
 export async function PATCH(req: Request) {
-  const g = guard();
-  if (g) return g;
   try {
     const body = await req.json();
     const { investorId, ...rest } = body;
@@ -51,6 +44,9 @@ export async function PATCH(req: Request) {
     const patch: Record<string, boolean> = {};
     for (const k of allowed) if (k in rest) patch[k] = Boolean(rest[k]);
 
+    if (DEMO) {
+      return NextResponse.json({ preferences: { ...demoPreferences(investorId), ...patch } });
+    }
     const db = getSupabaseAdmin();
     const { data, error } = await db
       .from("notification_preferences")

@@ -26,3 +26,6 @@ next-env.d.ts
 
 # real customer data (PII) — do not publish
 /Financial data/
+
+# Local Netlify folder
+.netlify

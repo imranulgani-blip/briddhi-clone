@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { usePortal } from "../lib/PortalContext";
+import { PORTAL_DEMO, DEMO_DEFAULT_INVESTOR } from "../lib/demo";
 
 const NAV = [
   { href: "/portal/dashboard", label: "Dashboard", icon: "grid" },
@@ -16,13 +17,17 @@ const NAV = [
 export default function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { investor, ready, signOut } = usePortal();
+  const { investor, ready, signIn, signOut } = usePortal();
 
   const isLogin = pathname === "/portal/login";
 
   useEffect(() => {
-    if (ready && !investor && !isLogin) router.replace("/portal/login");
-  }, [ready, investor, isLogin, router]);
+    if (!ready || investor || isLogin) return;
+    // Demo mode: skip the login gate and auto-sign-in a default investor so every
+    // portal screen is reachable without logging in. Otherwise, require sign-in.
+    if (PORTAL_DEMO) signIn(DEMO_DEFAULT_INVESTOR);
+    else router.replace("/portal/login");
+  }, [ready, investor, isLogin, router, signIn]);
 
   if (!ready) {
     return <div className="grid min-h-[60vh] place-items-center text-slate-500">Loading…</div>;
